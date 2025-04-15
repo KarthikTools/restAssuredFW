@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# TypeScript
+dist/
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Test reports
+playwright-report/
+test-results/
+
+# Misc
+.DS_Store 

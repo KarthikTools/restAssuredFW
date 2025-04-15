@@ -1,0 +1,54 @@
+TestCases: Table 1
+TestCaseID,TestCaseName,Description,Execute,PreRequisite,TestSteps
+TC_001,Create User API Flow,Validate user creation flow,Yes,None,"Step_001, Step_002"
+TC_002,Get User Details,Verify user data retrieval,No,TC_001,Step_003
+TC_003,Update User Details,Update user information,Yes,TC_001,"Step_004, Step_005"
+TC_004,Delete User,Remove user from system,Yes,TC_001,"Step_006, Step_007"
+
+TestSteps: Table 1
+StepID,APIName,Method,Endpoint,Headers,Body,ExtractVars,ExpectedStatus,Assertions,SaveResponse
+Step_001,CreateUser,POST,/api/users,Header_001,Body_001,userId=id,201,Assertions_001,Yes
+Step_002,ActivateUser,POST,/api/users/{{userId}}/activate,Header_002,Body_002,,200,Assertions_002,No
+Step_003,GetUser,GET,/api/users/{{userId}},,,200,Assertions_003,Yes
+Step_004,UpdateUser,PUT,/api/users/{{userId}},Header_001,Body_003,,200,Assertions_004,Yes
+Step_005,VerifyUpdate,GET,/api/users/{{userId}},,,200,Assertions_005,Yes
+Step_006,DeleteUser,DELETE,/api/users/{{userId}},Header_002,,204,Assertions_006,No
+Step_007,VerifyDelete,GET,/api/users/{{userId}},,,404,Assertions_007,Yes
+
+Assertions: Table 1
+Assertions,Validation_Type,Validation_input_Type,Expected,Actual
+Assertions_001,responseBody,jsonPath,name,{{name}}
+Assertions_001,responseBody,jsonPath,email,{{email}}
+Assertions_001,database,sqlQuery,SELECT COUNT(*) FROM users WHERE email = '{{email}}',1
+Assertions_002,responseBody,jsonPath,status,active
+Assertions_003,responseBody,jsonPath,name,{{name}}
+Assertions_003,responseBody,jsonPath,email,{{email}}
+Assertions_003,responseBody,jsonPath,status,active
+Assertions_004,responseBody,jsonPath,name,{{newName}}
+Assertions_004,responseBody,jsonPath,email,{{newEmail}}
+Assertions_005,responseBody,jsonPath,name,{{newName}}
+Assertions_005,responseBody,jsonPath,email,{{newEmail}}
+Assertions_006,database,sqlQuery,SELECT COUNT(*) FROM users WHERE id = '{{userId}}',0
+Assertions_007,responseBody,jsonPath,message,User not found
+
+Headers: Table 1
+HeaderID,Key,Value
+Header_001,Content-Type,application/json
+Header_001,Authorization,Bearer {{authToken}}
+Header_002,Authorization,Bearer {{authToken}}
+
+Bodies: Table 1
+BodyID,JSONTemplate
+Body_001,{"name":"{{name}}","email":"{{email}}","password":"{{password}}"}
+Body_002,{"activationCode":"{{activationCode}}"}
+Body_003,{"name":"{{newName}}","email":"{{newEmail}}","password":"{{newPassword}}"}
+
+TestData: Table 1
+TestCaseID,VarName,Value
+TC_001,name,John Doe
+TC_001,email,john.doe@example.com
+TC_001,password,secret123
+TC_001,activationCode,123456
+TC_003,newName,Jane Doe
+TC_003,newEmail,jane.doe@example.com
+TC_003,newPassword,newSecret123 
