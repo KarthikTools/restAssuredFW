@@ -1,0 +1,28 @@
+TestCases: Table 1
+TestCaseID,TestCaseName,Description,Execute,PreRequisite,TestSteps
+TC_001,User Flow with Token,Complete user flow with token extraction,Yes,None,"Step_001, Step_002"
+
+TestSteps: Table 1
+StepID,APIName,Method,Endpoint,Headers,Body,ExtractVars,ExpectedStatus,Assertions,SaveResponse
+Step_001,Login,POST,/api/auth/login,Header_001,Body_001,authToken=token,200,Assertions_Step_001,Yes
+Step_002,GetUserProfile,GET,/api/user/profile,Header_002,,,200,Assertions_Step_002,Yes
+
+Assertions: Table 1
+Assertions,Validation_Type,Validation_input_Type,Expected,Actual
+Assertions_Step_001,responseBody,jsonPath,status,success
+Assertions_Step_002,responseBody,jsonPath,user.email,john@example.com
+
+Headers: Table 1
+HeaderID,Key,Value,,
+Header_001,Content-Type,application/json,,
+Header_002,Content-Type,application/json,,
+Header_002,Authorization,Bearer {{authToken}},,
+
+Bodies: Table 1
+BodyID,JSONTemplate,,,
+Body_001,"{""username"": ""john"", ""password"": ""pass123""}",,,
+
+TestData: Table 1
+TestCaseID,VarName,Value,,
+TC_001,username,john,,
+TC_001,password,pass123,,
